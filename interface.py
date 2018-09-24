@@ -13,8 +13,8 @@ v_red = (255, 0, 0)
 v_blue = (0,0,255)
  
 #Star algorithm
-v_fil = 9
-v_col = 12
+v_fil = 8
+v_col = 8
 diagonals = True
 end = () 
 start = ()
@@ -25,8 +25,8 @@ v_margen = 5
 board = []
 star_board = []
 grid = []
-v_dimX = 800
-v_dimY = 800
+v_dimX = (v_fil+1)*v_square
+v_dimY = (v_col+1)*v_square
 update = False
 
             
