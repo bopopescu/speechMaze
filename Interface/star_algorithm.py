@@ -1,6 +1,45 @@
 '''
 Algoritmo Estrella
 '''
+def heuristic(node, goal):
+    dx = abs(node[0] - goal[0])
+    dy = abs(node[1] - goal[1])
+    return 10 * (dx + dy) + (14 - 2 * 10) * min(dx, dy)
+
+
+def setUp(n,m,start,end,board,diagonals):
+    star_board = Board(n, m,start, end, board, [], diagonals)
+
+    # Bloqueos -------------------------
+
+    star_board.setBlock(0, 0)
+    star_board.setBlock(5, 0)
+    star_board.setBlock(1, 3)
+    star_board.setBlock(3, 4)
+    star_board.setBlock(4, 2)
+    star_board.setBlock(2, 2)
+
+    # ----------------------------------
+
+    star_board.showBoard()
+
+    print("\nStart: ", star_board.start_point)
+    print("End: ", star_board.end_point)
+    print("Path:")
+    while ((star_board.solutionFound == False) or (len(star_board.paths) != 1)):
+        star_board.calculatePaths()
+        star_board.verifySolution()
+
+    for node in star_board.paths[0].pathArray:
+        print("Node (", node.i, " , ", node.j,")")
+        star_board.board[node.i][node.j].setNodeState("o")
+    print(star_board.paths)
+    #nd = star_board.paths[0][len(star_board.paths[0].pathArray)-1]
+    #star_board.board[nd.i][nd.j].setNodeState("e")
+
+    star_board.showBoard()
+    return star_board
+
 class Board:
 
     def __init__(self, n, m, start_point, end_point, board, paths, diagonals):
@@ -11,8 +50,9 @@ class Board:
         self.board = board
         self.paths = paths
         self.diagonals = diagonals
-        self.board[start_point[0]][start_point[1]].setNodeState("s")
-        self.board[end_point[0]][end_point[1]].setNodeState("e")
+        if start_point != () and end_point != ():
+            self.board[start_point[0]][start_point[1]].setNodeState("s")
+            self.board[end_point[0]][end_point[1]].setNodeState("e")
         self.solutionFound = False
 
     def showBoard(self):
