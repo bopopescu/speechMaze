@@ -4,17 +4,11 @@ from star_algorithm import Path
 from star_algorithm import Board
 from star_algorithm import heuristic
 from star_algorithm import setUp
- 
-#Colors
-v_black = (0, 0, 0)
-v_white = (255, 255, 255)
-v_green = ( 0, 255, 0)
-v_red = (255, 0, 0)
-v_blue = (0,0,255)
+
  
 #Star algorithm
-v_fil = 8
-v_col = 8
+v_fil = 12
+v_col = 12
 diagonals = True
 end = () 
 start = ()
@@ -29,34 +23,37 @@ v_dimX = (v_fil+1)*v_square
 v_dimY = (v_col+1)*v_square
 update = False
 
-            
-pygame.init()
-pantalla = pygame.display.set_mode([v_dimY,v_dimX])
-pygame.display.set_caption("speechMaze")
-v_done = False 
-clock = pygame.time.Clock()
 
+#Images
+Grass = pygame.transform.scale(pygame.image.load("images\\grass.jpg"),(v_square,v_square))
+Stone = pygame.transform.scale(pygame.image.load("images\\rock.png"),(v_square,v_square))
+Ground = pygame.transform.scale(pygame.image.load("images\\ground.png"),(v_square,v_square))
+Wood = pygame.transform.scale(pygame.image.load("images\\wood.png"),(v_square,v_square))
+Grill = pygame.transform.scale(pygame.image.load("images\\grill.jpg"),(v_square,v_square))
+Pig = pygame.transform.scale(pygame.image.load("images\\pig.png"),(v_square,v_square))
+PigTired = pygame.transform.scale(pygame.image.load("images\\pigTired.jpg"),(v_square,v_square))
+    
+
+        
 #Initial board
 for row in range(v_fil):
     grid.append([])
     for column in range(v_col):
         grid[row].append(0)
 
-for row in range(v_fil):
-    for column in range(v_col):
-        color = v_white
-        pygame.draw.rect(pantalla,
-                         color,
-                         [(v_margen+v_square) * column + v_margen,
-                          (v_margen+v_square) * row + v_margen,
-                          v_square,
-                          v_square])
-pygame.display.flip()
+        
+pygame.init()
+window = pygame.display.set_mode([v_dimY,v_dimX])
+pygame.display.set_caption("speechMaze")
+v_done = False 
+clock = pygame.time.Clock()
+
 
 
 
 point_end = False
 point_start = False
+path = []
 while not v_done:
     if end != () and start != ():
         grid2 = []
@@ -69,6 +66,8 @@ while not v_done:
 
         #Inicial star_board
         star_board = setUp(v_fil,v_col,start,end,grid2,diagonals)
+        for node in star_board.paths[0].pathArray:
+            path.append([node.i,node.j])
 
         #Update grid with solution
         for row in range(v_fil):
@@ -108,23 +107,32 @@ while not v_done:
                         grid[row][column] = 0
                 point_end = False
                 point_start = False
-            
-    for row in range(v_fil):
-        for column in range(v_col):
-            color = v_white
-            if grid[row][column] == 1: #start,end
-                color = v_green
-            if grid[row][column] == 2: #road
-                color = v_blue
-            if grid[row][column] == 3: #block
-                color = v_black
-            pygame.draw.rect(pantalla,
-                             color,
-                             [(v_margen+v_square) * column + v_margen,
-                              (v_margen+v_square) * row + v_margen,
-                              v_square,
-                              v_square])
+   
+        for row in range(v_fil):
+            for column in range(v_col):
+                window.blit(Grass, ((v_margen+v_square) * column + v_margen,(v_margen+v_square) * row + v_margen))
+                if grid[row][column] == 1: #start,end
+                    window.blit(Ground, ((v_margen+v_square) * column + v_margen,(v_margen+v_square) * row + v_margen))
+                if grid[row][column] == 2: #road
+                    window.blit(Grill, ((v_margen+v_square) * column + v_margen,(v_margen+v_square) * row + v_margen))
+                if grid[row][column] == 3: #block
+                    window.blit(Stone, ((v_margen+v_square) * column + v_margen,(v_margen+v_square) * row + v_margen))                
 
+        if path != []:  #simulate pig walking
+            for i in path:
+                print(i)
+                v_len = len(path)-1 
+                if(i == path[v_len]):
+                    window.blit(PigTired, ((v_margen+v_square) * i[1] + v_margen,(v_margen+v_square) * i[0] + v_margen))
+                else:
+                    window.blit(Pig, ((v_margen+v_square) * i[1] + v_margen,(v_margen+v_square) * i[0] + v_margen))
+                pygame.display.update()
+                pygame.time.delay(1000)
+                window.blit(Grill, ((v_margen+v_square) * i[1] + v_margen,(v_margen+v_square) * i[0] + v_margen))
+                pygame.display.update()                              
+            path = []
+            
+                
 
                   
     clock.tick(60)

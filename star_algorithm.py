@@ -14,12 +14,12 @@ def heuristic(node, goal):
 
 def setUp(n,m,start,end,board,diagonals):
     star_board = Board(n, m,start, end, board, [], diagonals)
-
     # Bloqueos -------------------------
     for i in range(n):
         for j in range(m):
-            ran = random.randint(1,100)
-            if(ran < 20):
+            ran = random.randint(1,n*m)
+            ran2 = n*m//6
+            if(ran < ran2 and start[0] != i and end[0] != i and start[1] != j and end[1] != j):
                 star_board.setBlock(i,j)
     # ----------------------------------
 
