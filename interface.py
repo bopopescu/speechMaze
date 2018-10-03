@@ -48,6 +48,7 @@ def comando(cadena):
     cadena = cadena.lower()
     entrada = cadena.split()
     global update
+    global blocks
     if(len(entrada)>=2):
         if(entrada[1] == "columnas"):
             try:
@@ -65,6 +66,17 @@ def comando(cadena):
                 os.system("say 'Actualizando filas'")
             except ValueError:
                 os.system("say 'No entendi'")
+        elif(entrada[0] == "diagonal"):
+            try:
+                global diagonals
+                if(entrada[1] == "si"):
+                    diagonals = True
+                    os.system("say 'Habilitando diagonales'")
+                if(entrada[1] == "no"):
+                    diagonals = False
+                    os.system("say 'Deshabilitando diagonales'")
+            except ValueError:
+                os.system("say 'No entendi'")
         elif(entrada[0] == "bloque"): #tamano
             try:
                 a = int(entrada[1])
@@ -73,7 +85,7 @@ def comando(cadena):
                 os.system("say 'Actualizando largo de bloque'")
             except ValueError:
                 os.system("say 'No entendi'")
-        elif(entrada[0] == "inicio" or entrada[0] == "inició"): 
+        elif(entrada[0] == "empezar"): 
             num1 = ''
             num2 = ''
             global start
@@ -87,13 +99,20 @@ def comando(cadena):
                     num1 = int(entrada[2])
                 if(entrada[1] == "fila" or entrada[1] == "filas"):
                     num2 = int(entrada[4])
+                if (start != ()):
+                    grid[start[0]][start[1]] = 0
                 if(num1 != '' and num2 != ''):
-                    if (num1 <= v_col and num2 <= v_fil):
+                    if (num1 < v_col and num2 < v_fil):
                         os.system("say 'Poniendo punto de inicio'")
                         start = (num1,num2)
+                        print("Start: ", start)
                         global grid
                         grid[num1][num2] = 1
-                        draw_grid()                        
+                        if(start != () and end != ()):
+                            blocks = []
+                            limpiar_bloques()
+                            blocks = make_blocks() 
+                        draw_grid()                      
                     else:
                         os.system("say 'Fuera de rango'")
                 else:
@@ -113,12 +132,18 @@ def comando(cadena):
                     num1 = int(entrada[2])
                 if(entrada[1] == "fila" or entrada[1] == "filas"):
                     num2 = int(entrada[4])
+                if (end != ()):
+                    grid[end[0]][end[1]] = 0
                 if(num1 != '' and num2 != ''):
-                    if (num1 <= v_col and num2 <= v_fil):
+                    if (num1 < v_col and num2 < v_fil):
                         os.system("say 'Poniendo punto de fin'")
                         end = (num1,num2)
                         global grid
                         grid[num1][num2] = 1
+                        if(start != () and end != ()):
+                            blocks = []
+                            limpiar_bloques()
+                            blocks = make_blocks()
                         draw_grid()
                     else:
                         os.system("say 'Fuera de rango'")
@@ -129,12 +154,17 @@ def comando(cadena):
             update = True
             print(entrada[0])
             os.system("say 'Limpiando pantalla'")
-        if(entrada[0] == "empezar"):
-            global start_maze
-            start_maze = True
-            print(entrada[0])
-            os.system("say 'Haciendo el camino'")
-        
+        if(entrada[0] == "correr"):
+            global end
+            global start
+            print("end: ",end,"start: ",start)
+            if(end != () and start != ()):
+                global start_maze
+                start_maze = True
+                print(entrada[0])
+                os.system("say 'Haciendo el camino'")
+            else:
+                os.system("say 'Se ocupa un inicio y un fin'")
 
 def escuchar():
         global escuchando
@@ -182,6 +212,18 @@ def reload_grid():
     point_start = False
 
 
+def limpiar_bloques():
+    global grid
+    global v_fil
+    global v_col
+    for row in range(v_fil):
+        for column in range(v_col):
+            if grid[row][column] == 3:
+                grid[row][column] = 0
+   
+
+
+
 def update_col(col):
     global v_col
     global update    
@@ -227,9 +269,9 @@ def event_click():
 
 def bacon_moving(v_margen,path): 
     global v_square 
-    Pig = pygame.transform.scale(pygame.image.load("images//pig.png"),(v_square,v_square))
-    PigTired = pygame.transform.scale(pygame.image.load("images//pigTired.jpg"),(v_square,v_square))
-    Grill = pygame.transform.scale(pygame.image.load("images//grill.jpg"),(v_square,v_square))
+    Pig = pygame.transform.scale(pygame.image.load("images/pig.png"),(v_square,v_square))
+    PigTired = pygame.transform.scale(pygame.image.load("images/pigTired.jpg"),(v_square,v_square))
+    Grill = pygame.transform.scale(pygame.image.load("images/grill.jpg"),(v_square,v_square))
     for i in path:
         print(i)
         v_len = len(path)-1 
@@ -245,6 +287,7 @@ def bacon_moving(v_margen,path):
 
 def make_route(path,blocks):
     global star_board
+    global diagonals
     grid2 = []
     for row in range(v_fil+1):
         temp = []
@@ -272,11 +315,12 @@ def draw_route():
                 grid[row][column] = 3 
 
 def make_blocks():
-    global v_gil
+    global v_fil
     global v_col
     global end
     global start
     global grid
+    global blocks
     blocks = []
     for i in range(v_fil):
         for j in range(v_col):
@@ -320,6 +364,7 @@ def draw():
     global window
     global update
     global start_maze
+    global blocks
 
     v_done = False
     path = []
@@ -336,15 +381,21 @@ def draw():
         for column in range(v_col):
             grid[row].append(0)
 
+    #Initial and end position 
+    in1 = random.randint(0,v_col)
+    in2 = random.randint(0,v_fil)
+    start =(in1,in2)
+    grid[start[0]][start[1]] = 1
+    in1 = random.randint(0,v_col)
+    in2 = random.randint(0,v_fil)
+    while(start[0] == in1 and star[1] == in2):
+        in1 = random.randint(0,v_col)
+        in2 = random.randint(0,v_fil) 
+    end = (in1,in2)
+    grid[end[0]][end[1]] = 1
+
         
     while not v_done:
-
-        #Make route with star algorith
-        if end != () and start != ():
-           blocks = make_blocks()
-           make_route(path,blocks)
-           end = ()
-           start = ()
             
 
         #Actualizacion
@@ -376,6 +427,7 @@ def draw():
 
             #simulate pig walking
             if start_maze == True:
+                make_route(path,blocks) #
                 draw_route()
                 draw_grid()
                 bacon_moving(v_margen,path)
