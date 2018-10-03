@@ -54,22 +54,25 @@ def comando(cadena):
                 col = int(entrada[0])
                 update_col(col)
                 print(col)
+                os.system("say 'Actualizando columnas'")
             except ValueError:
-                print("Sorry")
+                os.system("say 'No entendi'")
         elif(entrada[1] == "filas" or entrada[1] == "pilas"):
             try:
                 fil = int(entrada[0])
                 update_fil(fil)
                 print(fil)
+                os.system("say 'Actualizando filas'")
             except ValueError:
-                print("Sorry")
+                os.system("say 'No entendi'")
         elif(entrada[0] == "bloque"): #tamano
             try:
                 a = int(entrada[1])
                 update_tam(a)
                 print(a)
+                os.system("say 'Actualizando largo de bloque'")
             except ValueError:
-                print("Sorry")
+                os.system("say 'No entendi'")
         elif(entrada[0] == "inicio" or entrada[0] == "inició"): 
             num1 = ''
             num2 = ''
@@ -86,16 +89,17 @@ def comando(cadena):
                     num2 = int(entrada[4])
                 if(num1 != '' and num2 != ''):
                     if (num1 <= v_col and num2 <= v_fil):
+                        os.system("say 'Poniendo punto de inicio'")
                         start = (num1,num2)
                         global grid
                         grid[num1][num2] = 1
-                        draw_grid()
+                        draw_grid()                        
                     else:
-                        print("Fuera de rango")
+                        os.system("say 'Fuera de rango'")
                 else:
-                    print("Sorry")
+                    os.system("say 'No entendi'")
             except ValueError:
-                print("Sorry")
+                os.system("say 'No entendi'")
         elif(entrada[0] == "fin" or entrada[0] == "sin" ):
             num1 = ''
             num2 = ''
@@ -111,22 +115,25 @@ def comando(cadena):
                     num2 = int(entrada[4])
                 if(num1 != '' and num2 != ''):
                     if (num1 <= v_col and num2 <= v_fil):
+                        os.system("say 'Poniendo punto de fin'")
                         end = (num1,num2)
                         global grid
                         grid[num1][num2] = 1
                         draw_grid()
                     else:
-                        print("Fuera de rango")
+                        os.system("say 'Fuera de rango'")
             except ValueError:
-                print("Sorry")
+                os.system("say 'No entendi'")
     else:    
         if(entrada[0] == "limpiar"):
             update = True
             print(entrada[0])
+            os.system("say 'Limpiando pantalla'")
         if(entrada[0] == "empezar"):
             global start_maze
             start_maze = True
             print(entrada[0])
+            os.system("say 'Haciendo el camino'")
         
 
 def escuchar():
