@@ -157,7 +157,7 @@ def comando(cadena):
             os.system("say 'Limpiando pantalla'")
         if(entrada[0] == "salir"):
             print(entrada[0])
-            os.system("say 'Adios mundo cruel'")
+            os.system("say 'Adios, mundo cruel'")
             global v_done
             v_done = True
         if(entrada[0] == "correr"):
@@ -175,7 +175,7 @@ def comando(cadena):
 def escuchar():
         global escuchando
         global r
-        
+        os.system("say 'Hola... soy Béicon'")
         while (escuchando == True):
             time.sleep(1)
             with SR.Microphone() as source:
@@ -187,9 +187,9 @@ def escuchar():
                     comando(audio)
                     #print(audio)
                 except SR.UnknownValueError:
-                   os.system("say 'Perdon no entiendo'")
+                   os.system("say 'Perdón, no entiendo'")
                 except SR.RequestError as e:
-                    os.system("say 'I could not request results from Google Speech Recognition service. Do you want error report?'")
+                    os.system("say 'No puedo mostrar resultados del servicio de Reconocimiento de Voz de Google. Quiere enviar un reporte?'")
 
  
 
