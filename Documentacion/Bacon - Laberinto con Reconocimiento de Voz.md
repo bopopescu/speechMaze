@@ -54,11 +54,7 @@ FIN COLUMNA 4 FILA 4
 
 De esta manera, el programa inicia el plano de trabajo con obstaculos creados aleatoriamente, garantizando que existe al menos 1 solución para que el agente llegue a su destino. 
 
-
-
-![](/Users/samantha/Desktop/Docu/images/ejemplo1.jpg)
-
-
+![](/Users/vainilla/Documents/speechMaze/Documentacion/images/ejemplo1.jpg)
 
 
 
@@ -78,7 +74,7 @@ Comando para habilitar el uso de diagonales en la solución del laberinto.
 
 Muestra la solución para que el agente llegue a su destino.
 
-
+![](/Users/vainilla/Documents/speechMaze/Documentacion/images/ejemplo2.png)
 
 **Limpiar**
 
