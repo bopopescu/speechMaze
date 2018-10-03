@@ -1,4 +1,3 @@
-
 import webbrowser
 import string
 import speech_recognition as SR
@@ -47,7 +46,7 @@ def escuchar():
                 except SR.RequestError as e:
                     os.system("say 'I could not request results from Google Speech Recognition service. Do you want error report?'")
 
-
+escuchar()
         
                 
                     
