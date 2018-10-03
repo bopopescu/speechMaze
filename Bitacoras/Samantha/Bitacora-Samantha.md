@@ -1,4 +1,6 @@
-# Done
+## **2018-09-16**
+
+
 
 ## Speech Recognition
 
@@ -128,7 +130,7 @@ $ sudo pip3 install pyttsx
 
 
 
-# In Process
+# **2018-09-18**
 
 1. Implement Google Text-to-Speech API
 2. Say what it receive 
@@ -163,6 +165,32 @@ https://cloud.google.com/python/setup#installing_and_using_virtualenv
    > ```
 
 
+
+# **2018-09-20**
+
+The Text-to-Speech function it's define with system library (``import os``) call by Python.
+
+
+
+Command for function:
+
+```python
+import os
+
+os.system("say 'What I want to say'")
+```
+
+
+
+In this ways, the voice which is speaking it's the system voice. In Microsoft Windows is going to be Cortana, in MacOS can be Siri or the want you choose for narration in Accesibility module of de MacOS settings.
+
+
+
+
+
+# **2018-10-03**
+
+User manual with screenshot of the last reviews of the program
 
 # Links
 

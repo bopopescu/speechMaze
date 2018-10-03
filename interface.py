@@ -282,10 +282,9 @@ def bacon_moving(v_margen,path):
         v_len = len(path)-1 
         if(i == path[v_len]):
             window.blit(PigTired, ((v_margen+v_square) * i[1] + v_margen,(v_margen+v_square) * i[0] + v_margen))
-            pygame.display.update()
         else:
             window.blit(Pig, ((v_margen+v_square) * i[1] + v_margen,(v_margen+v_square) * i[0] + v_margen))
-            pygame.display.update()
+        draw_grid()
         pygame.time.delay(1000)
 
 
@@ -299,6 +298,7 @@ def make_route(path,blocks):
         for column in range(v_col+1):
             node = Node(row, column, " ", heuristic((row, column), end))
             temp.append(node)
+            # grid[row - 1][column - 1] = 2
         grid2.append(temp)
 
     #Inicial star_board
