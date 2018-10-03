@@ -19,7 +19,7 @@ import os
 #import time
 
 
-escuchando = True;
+escuchando = True
 
 
 #Star algorithm
@@ -39,6 +39,7 @@ point_end = False
 point_start = False
 v_margen = 5
 star_board = []
+v_done = False
 
 # obtain audio 
 r = SR.Recognizer()
@@ -104,10 +105,10 @@ def comando(cadena):
                 if(num1 != '' and num2 != ''):
                     if (num1 < v_col and num2 < v_fil):
                         os.system("say 'Poniendo punto de inicio'")
-                        start = (num1,num2)
+                        start = (num2,num1)
                         print("Start: ", start)
                         global grid
-                        grid[num1][num2] = 1
+                        grid[num2][num1] = 1
                         if(start != () and end != ()):
                             blocks = []
                             limpiar_bloques()
@@ -137,9 +138,9 @@ def comando(cadena):
                 if(num1 != '' and num2 != ''):
                     if (num1 < v_col and num2 < v_fil):
                         os.system("say 'Poniendo punto de fin'")
-                        end = (num1,num2)
+                        end = (num2,num1)
                         global grid
-                        grid[num1][num2] = 1
+                        grid[num2][num1] = 1
                         if(start != () and end != ()):
                             blocks = []
                             limpiar_bloques()
@@ -154,6 +155,11 @@ def comando(cadena):
             update = True
             print(entrada[0])
             os.system("say 'Limpiando pantalla'")
+        if(entrada[0] == "salir"):
+            print(entrada[0])
+            os.system("say 'Adios mundo cruel'")
+            global v_done
+            v_done = True
         if(entrada[0] == "correr"):
             global end
             global start
@@ -366,7 +372,7 @@ def draw():
     global start_maze
     global blocks
 
-    v_done = False
+    global v_done
     path = []
     board = []
     star_board = []
@@ -382,20 +388,20 @@ def draw():
             grid[row].append(0)
 
     #Initial and end position 
-    in1 = random.randint(0,v_col)
-    in2 = random.randint(0,v_fil)
+    in1 = random.randint(0,v_col-1)
+    in2 = random.randint(0,v_fil-1)
     start =(in1,in2)
     grid[start[0]][start[1]] = 1
-    in1 = random.randint(0,v_col)
-    in2 = random.randint(0,v_fil)
-    while(start[0] == in1 and star[1] == in2):
-        in1 = random.randint(0,v_col)
-        in2 = random.randint(0,v_fil) 
+    in1 = random.randint(0,v_col-1)
+    in2 = random.randint(0,v_fil-1)
+    while(start[0] == in1 and start[1] == in2):
+        in1 = random.randint(0,v_col-1)
+        in2 = random.randint(0,v_fil-1) 
     end = (in1,in2)
     grid[end[0]][end[1]] = 1
 
         
-    while not v_done:
+    while(v_done == False):
             
 
         #Actualizacion
@@ -441,7 +447,9 @@ def draw():
         clock.tick(60)
         pygame.display.flip()
                 
-        
+
+    global escuchando
+    escuchando = False
     pygame.quit()
 
 
