@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
+
 import webbrowser
 import string
 import speech_recognition as SR
@@ -10,21 +13,22 @@ escuchando = True;
 r = SR.Recognizer()
 
 def comando(cadena):
-        print("hola")
         cadena = cadena.lower()
         entrada = cadena.split()
-        if(entrada[1] == "columnas"):
+        if(entrada[0] == "columnas"):
                 print(entrada[0])
-        elif(entrada[1] == "filas" or entrada[1] == "pilas"):
+        elif(entrada[0] == "filas" or entrada[0] == "pilas"):
                 print(entrada[0])
         elif(entrada[0] == "tamaño"):
-                print(entrada[1])
+                print(entrada[0])
         elif(entrada[0] == "inicio"):
-                print(entrada[1])
+                print(entrada[0])
         elif(entrada[0] == "final"):
-                print(entrada[1])
+                print(entrada[0])
         elif(entrada[0] == "limpiar"):
-                print(entrada[1])
+                print(entrada[0])
+        else:
+                pass
         
 
 def escuchar():
@@ -39,6 +43,7 @@ def escuchar():
                 audio5 = r.listen(source)
                 try:
                     audio = r.recognize_google(audio5,language = "es-CR")
+                    print(audio)
                     comando(audio)
                     #print(audio)
                 except SR.UnknownValueError:

@@ -52,6 +52,9 @@ class Board:
             self.board[start_point[0]][start_point[1]].setNodeState("s")
             self.board[end_point[0]][end_point[1]].setNodeState("e")
         self.solutionFound = False
+    
+    def getBoard(self):
+        return board
 
     def showBoard(self):
         print("  " + (" --- " * self.m))

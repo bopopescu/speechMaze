@@ -22,43 +22,111 @@ import os
 escuchando = True;
 
 
+#Star algorithm
+v_fil = 8
+v_col = 8
+v_square  = 50
+diagonals = True
+end = () 
+start = ()
+update = False
+start_maze = False
+
+
+#Grid variables
+grid = []
+point_end = False
+point_start = False
+v_margen = 5
+star_board = []
+
 # obtain audio 
 r = SR.Recognizer()
 
 def comando(cadena):
-        print(cadena)
-        cadena = cadena.lower()
-        entrada = cadena.split()
-        if(len(entrada)>=2):
-            if(entrada[1] == "columnas"):
-                try:
-                    col = int(entrada[0])
-                    update_col(col)
-                    print(col)
-                except ValueError:
+    print(cadena)
+    cadena = cadena.lower()
+    entrada = cadena.split()
+    global update
+    if(len(entrada)>=2):
+        if(entrada[1] == "columnas"):
+            try:
+                col = int(entrada[0])
+                update_col(col)
+                print(col)
+            except ValueError:
+                print("Sorry")
+        elif(entrada[1] == "filas" or entrada[1] == "pilas"):
+            try:
+                fil = int(entrada[0])
+                update_fil(fil)
+                print(fil)
+            except ValueError:
+                print("Sorry")
+        elif(entrada[0] == "bloque"): #tamano
+            try:
+                a = int(entrada[1])
+                update_tam(a)
+                print(a)
+            except ValueError:
+                print("Sorry")
+        elif(entrada[0] == "inicio" or entrada[0] == "inició"): 
+            num1 = ''
+            num2 = ''
+            global start
+            
+            try:
+                if(entrada[1] == "columna" or entrada[1] == "columnas"):
+                    num1 = int(entrada[2])
+                if(entrada[3] == "fila" or entrada[1] == "filas"):
+                    num2 = int(entrada[4])
+                if(entrada[3] == "columna" or entrada[1] == "columnas"):
+                    num1 = int(entrada[2])
+                if(entrada[1] == "fila" or entrada[1] == "filas"):
+                    num2 = int(entrada[4])
+                if(num1 != '' and num2 != ''):
+                    if (num1 <= v_col and num2 <= v_fil):
+                        start = (num1,num2)
+                        global grid
+                        grid[num1][num2] = 1
+                        draw_grid()
+                    else:
+                        print("Fuera de rango")
+                else:
                     print("Sorry")
-            elif(entrada[1] == "filas" or entrada[1] == "pilas"):
-                try:
-                    fil = int(entrada[0])
-                    update_fil(fil)
-                    print(fil)
-                except ValueError:
-                    print("Sorry")
-            elif(entrada[0] == "tamaño"):
-                try:
-                    a = int(entrada[1])
-                    update_tam(a)
-                    print(a)
-                except ValueError:
-                    print("Sorry")
-            elif(entrada[0] == "inicio" or entrada[0] =="inició"):
-                print(entrada)
-                
-        else:    
-            if(entrada[0] == "limpiar"):
-                global update
-                update = True
-                print(entrada[0])
+            except ValueError:
+                print("Sorry")
+        elif(entrada[0] == "fin" or entrada[0] == "sin" ):
+            num1 = ''
+            num2 = ''
+            global end
+            try:
+                if(entrada[1] == "columna" or entrada[1] == "columnas"):
+                    num1 = int(entrada[2])
+                if(entrada[3] == "fila" or entrada[1] == "filas"):
+                    num2 = int(entrada[4])
+                if(entrada[3] == "columna" or entrada[1] == "columnas"):
+                    num1 = int(entrada[2])
+                if(entrada[1] == "fila" or entrada[1] == "filas"):
+                    num2 = int(entrada[4])
+                if(num1 != '' and num2 != ''):
+                    if (num1 <= v_col and num2 <= v_fil):
+                        end = (num1,num2)
+                        global grid
+                        grid[num1][num2] = 1
+                        draw_grid()
+                    else:
+                        print("Fuera de rango")
+            except ValueError:
+                print("Sorry")
+    else:    
+        if(entrada[0] == "limpiar"):
+            update = True
+            print(entrada[0])
+        if(entrada[0] == "empezar"):
+            global start_maze
+            start_maze = True
+            print(entrada[0])
         
 
 def escuchar():
@@ -81,35 +149,6 @@ def escuchar():
                     os.system("say 'I could not request results from Google Speech Recognition service. Do you want error report?'")
 
  
-#Star algorithm
-v_fil = 8
-v_col = 8
-v_square  = 50
-diagonals = True
-end = () 
-start = ()
-update = False
-start_maze = False
-
-
-#Grid variables
-grid = []
-point_end = False
-point_start = False
-v_margen = 5
-star_board = []
-
-#Images
-Grass = pygame.transform.scale(pygame.image.load("images//grass.jpg"),(v_square,v_square))
-Stone = pygame.transform.scale(pygame.image.load("images//rock.png"),(v_square,v_square))
-Ground = pygame.transform.scale(pygame.image.load("images//ground.png"),(v_square,v_square))
-Wood = pygame.transform.scale(pygame.image.load("images//wood.png"),(v_square,v_square))
-Grill = pygame.transform.scale(pygame.image.load("images//grill.jpg"),(v_square,v_square))
-Pig = pygame.transform.scale(pygame.image.load("images//pig.png"),(v_square,v_square))
-PigTired = pygame.transform.scale(pygame.image.load("images//pigTired.jpg"),(v_square,v_square))
-    
-
-    
 
         
 pygame.init()
@@ -168,10 +207,7 @@ def event_click():
     global start
     pos = pygame.mouse.get_pos()
     column = pos[0] // (v_square + v_margen)
-    row = pos[1] // (v_square + v_margen)
-    if column == 0 and row == 0 :
-        update_col(20)
-            
+    row = pos[1] // (v_square + v_margen)           
     if point_end == False and point_start == False:
         grid[row][column] = 1
         start = (row,column)
@@ -182,7 +218,11 @@ def event_click():
             end = (row,column)
             point_end = True
 
-def bacon_moving(v_margen,v_square,path):  
+def bacon_moving(v_margen,path): 
+    global v_square 
+    Pig = pygame.transform.scale(pygame.image.load("images//pig.png"),(v_square,v_square))
+    PigTired = pygame.transform.scale(pygame.image.load("images//pigTired.jpg"),(v_square,v_square))
+    Grill = pygame.transform.scale(pygame.image.load("images//grill.jpg"),(v_square,v_square))
     for i in path:
         print(i)
         v_len = len(path)-1 
@@ -247,8 +287,12 @@ def draw_grid():
     global grid
     global v_margen
     global v_square
-    for row in range(v_fil):
-        for column in range(v_col):
+    Grass = pygame.transform.scale(pygame.image.load("images//grass.jpg"),(v_square,v_square))
+    Stone = pygame.transform.scale(pygame.image.load("images//rock.png"),(v_square,v_square))
+    Ground = pygame.transform.scale(pygame.image.load("images//ground.png"),(v_square,v_square))
+    Grill = pygame.transform.scale(pygame.image.load("images//grill.jpg"),(v_square,v_square))
+    for row in range(0,v_fil):
+        for column in range(0,v_col):
             window.blit(Grass, ((v_margen+v_square) * column + v_margen,(v_margen+v_square) * row + v_margen))
             if grid[row][column] == 1: #start,end
                 window.blit(Ground, ((v_margen+v_square) * column + v_margen,(v_margen+v_square) * row + v_margen))
@@ -327,7 +371,7 @@ def draw():
             if start_maze == True:
                 draw_route()
                 draw_grid()
-                bacon_moving(v_margen,v_square,path)
+                bacon_moving(v_margen,path)
                 path = []
                 start_maze = False
                 end = ()
