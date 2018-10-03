@@ -277,18 +277,17 @@ def bacon_moving(v_margen,path):
     global v_square 
     Pig = pygame.transform.scale(pygame.image.load("images/pig.png"),(v_square,v_square))
     PigTired = pygame.transform.scale(pygame.image.load("images/pigTired.jpg"),(v_square,v_square))
-    Grill = pygame.transform.scale(pygame.image.load("images/grill.jpg"),(v_square,v_square))
     for i in path:
         print(i)
         v_len = len(path)-1 
         if(i == path[v_len]):
             window.blit(PigTired, ((v_margen+v_square) * i[1] + v_margen,(v_margen+v_square) * i[0] + v_margen))
+            pygame.display.update()
         else:
             window.blit(Pig, ((v_margen+v_square) * i[1] + v_margen,(v_margen+v_square) * i[0] + v_margen))
-        pygame.display.update()
+            pygame.display.update()
         pygame.time.delay(1000)
-        window.blit(Grill, ((v_margen+v_square) * i[1] + v_margen,(v_margen+v_square) * i[0] + v_margen))
-        pygame.display.update()
+
 
 
 def make_route(path,blocks):
