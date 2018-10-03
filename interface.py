@@ -1,6 +1,7 @@
 import pygame
 import threading
 import time
+import random
 from star_algorithm import Node
 from star_algorithm import Path
 from star_algorithm import Board
@@ -85,6 +86,7 @@ diagonals = True
 end = () 
 start = ()
 update = False
+start_maze = False
 
 
 #Grid variables
@@ -92,6 +94,7 @@ grid = []
 point_end = False
 point_start = False
 v_margen = 5
+star_board = []
 
 #Images
 Grass = pygame.transform.scale(pygame.image.load("images//grass.jpg"),(v_square,v_square))
@@ -132,8 +135,7 @@ def reload_grid():
 
 def update_col(col):
     global v_col
-    global update
-    
+    global update    
     v_col = col
     update = True
     
@@ -191,8 +193,8 @@ def bacon_moving(v_margen,v_square,path):
         pygame.display.update()
 
 
-def make_route(path):
-    global grid
+def make_route(path,blocks):
+    global star_board
     grid2 = []
     for row in range(v_fil+1):
         temp = []
@@ -202,18 +204,55 @@ def make_route(path):
         grid2.append(temp)
 
     #Inicial star_board
-    star_board = setUp(v_fil,v_col,start,end,grid2,diagonals)
+    star_board = setUp(v_fil,v_col,start,end,grid2,diagonals,blocks)
+
     for node in star_board.paths[0].pathArray:
         path.append([node.i,node.j])
 
+
+def draw_route():
+    global grid
+    global star_board
     #Update grid with solution
     for row in range(v_fil):
         for column in range(v_col):
-            if(star_board.board[row][column].state == "b" ):
-                grid[row][column] = 3
             if(star_board.board[row][column].state == "o" ):
                 grid[row][column] = 2
+            if(star_board.board[row][column].state == "b" ):
+                grid[row][column] = 3 
 
+def make_blocks():
+    global v_gil
+    global v_col
+    global end
+    global start
+    global grid
+    blocks = []
+    for i in range(v_fil):
+        for j in range(v_col):
+            ran = random.randint(1,v_fil*v_col)
+            ran2 = v_fil*v_col//6
+            if(ran < ran2 and start[0] != i and end[0] != i and start[1] != j and end[1] != j):
+                blocks.append([i,j])
+                grid[i][j] = 3
+    return blocks
+
+
+def draw_grid():
+    global v_fil
+    global v_col
+    global grid
+    global v_margen
+    global v_square
+    for row in range(v_fil):
+        for column in range(v_col):
+            window.blit(Grass, ((v_margen+v_square) * column + v_margen,(v_margen+v_square) * row + v_margen))
+            if grid[row][column] == 1: #start,end
+                window.blit(Ground, ((v_margen+v_square) * column + v_margen,(v_margen+v_square) * row + v_margen))
+            if grid[row][column] == 2: #road
+                window.blit(Grill, ((v_margen+v_square) * column + v_margen,(v_margen+v_square) * row + v_margen))
+            if grid[row][column] == 3: #block
+                window.blit(Stone, ((v_margen+v_square) * column + v_margen,(v_margen+v_square) * row + v_margen))
 
 def draw():
     global end
@@ -226,12 +265,14 @@ def draw():
     global v_margen
     global window
     global update
+    global start_maze
 
     v_done = False
     path = []
     board = []
     star_board = []
-    
+    blocks = []
+
     hiloVoz = threading.Thread(target = escuchar)
     hiloVoz.start()
 
@@ -246,9 +287,11 @@ def draw():
 
         #Make route with star algorith
         if end != () and start != ():
-            make_route(path)
-            end = ()
-            start = ()
+           blocks = make_blocks()
+           make_route(path,blocks)
+           end = ()
+           start = ()
+            
 
         #Actualizacion
         if (update== True):
@@ -271,22 +314,21 @@ def draw():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
                     reload_grid()
+                if event.key == pygame.K_s:
+                    start_maze = True
 
             #Dibujar cuadricula
-            for row in range(v_fil):
-                for column in range(v_col):
-                    window.blit(Grass, ((v_margen+v_square) * column + v_margen,(v_margen+v_square) * row + v_margen))
-                    if grid[row][column] == 1: #start,end
-                        window.blit(Ground, ((v_margen+v_square) * column + v_margen,(v_margen+v_square) * row + v_margen))
-                    if grid[row][column] == 2: #road
-                        window.blit(Grill, ((v_margen+v_square) * column + v_margen,(v_margen+v_square) * row + v_margen))
-                    if grid[row][column] == 3: #block
-                        window.blit(Stone, ((v_margen+v_square) * column + v_margen,(v_margen+v_square) * row + v_margen))
+            draw_grid()
 
             #simulate pig walking
-            if path != []:
+            if start_maze == True:
+                draw_route()
+                draw_grid()
                 bacon_moving(v_margen,v_square,path)
                 path = []
+                start_maze = False
+                end = ()
+                start = ()
 
                                
                       
